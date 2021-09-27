@@ -12,8 +12,8 @@ session = Session()
 reddit = praw.Reddit(
     client_id=os.getenv('CLIENT_ID'),
     client_secret=os.getenv('SECRET'),
-    username=os.getenv('USER'),
-    password=os.getenv('PASS'),
+    username=os.getenv('BOTUSER'),
+    password=os.getenv('BOTPASS'),
     user_agent="simple archive deleter app by u/devdevgoat",
 )
 print(f'Logged in as {reddit.user.me()}')
@@ -25,6 +25,10 @@ print(f'Logged in as {reddit.user.me()}')
 # query = 'timestamp:{}..{}'.format(current_timestamp, two_months_timestamp)
 # results = reddit.subreddit('CMKMArchive').search(query, sort='new')
 
-for s in reddit.subreddit('CMKMArchive').new():
-    print(s.title)
-    s.delete()
+i=1
+while i > 0: 
+    print("looping")
+    for s in reddit.subreddit('CMKMArchive').hot():
+        print(s.title)
+        s.delete()
+        i+=1

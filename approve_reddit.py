@@ -13,13 +13,17 @@ reddit = praw.Reddit(
     client_id=os.getenv('CLIENT_ID'),
     client_secret=os.getenv('SECRET'),
     username=os.getenv('MODUSER'),
-    password=os.getenv('MOSPASS'),
+    password=os.getenv('MODPASS'),
     user_agent="simple archive deleter app by u/devdevgoat",
 )
 print(f'Logged in as {reddit.user.me()}')
 
 
-
-# for item in reddit.subreddit("CMKMArchive").mod.unmoderated():
-for item in reddit.subreddit("CMKMArchive").mod.spam():
-    print(item)
+i = 10
+while i>1:
+    i=1
+    # for item in reddit.subreddit("CMKMArchive").mod.unmoderated():
+    for item in reddit.subreddit("CMKMArchive").mod.unmoderated():
+        print(item)
+        item.mod.approve()
+        i+=1

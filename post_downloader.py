@@ -10,8 +10,9 @@ postUrl = 'https://www.investorvillage.com/smbd.asp?mb=155&mn=8&pt=msg&mid=15747
 
 pattern = re.compile('In response to')
 
-with open('updated_data.json','r',encoding="utf-8") as jd:
+with open('data.json','r',encoding="utf-8") as jd:
     data = json.load(jd)
+    print(data)
 
 
 def get_id():
@@ -25,6 +26,7 @@ def get_post(pid):
     if 'parent' not in data[pid].keys():
         print(f'Processing post {pid}')
     else:
+        print(f'failed loading {pid}')
         return
     try:
         r = requests.get(data[pid]['link'])
@@ -34,7 +36,9 @@ def get_post(pid):
             data[pid]['parent'] = [t.parent.find('a').get_text(strip=True).replace('msg ','') for t in parent][0]
         else:
             data[pid]['parent'] = "-1"
-        data[pid]['post'] = soup.find('div', {"id":"divMessageText"}).get_text(strip=True)
+        # data[pid]['post_text'] = soup.find('div', {"id":"divMessageText"}).get_text(strip=True)
+        data[pid]['post'] = soup.find('div', {"id":"divMessageText"}).prettify()
+        savePost(pid,data[pid]['post'])
         # pprint([t.parent.find('a').get_text(strip=True).replace('msg ','') for t in soup.findAll('img', {'class':'rszImgExpandMsg'})])
         # print(soup.find('div', {"id":"divMessageText"}).get_text(strip=True))
         save()
@@ -45,8 +49,12 @@ def get_post(pid):
             file.write(pid)
 
 def save():
-    with open('updated_data.json', "w",encoding="utf-8") as file:
+    with open('updated_data_html.json', "w",encoding="utf-8") as file:
             json.dump(data,file,indent=4)
+
+def savePost(pid,post):
+    with open(f'/posts/{pid}.html', "w",encoding="utf-8") as file:
+            file.write(post)
 
 postId = get_id()
 while postId<12258:
